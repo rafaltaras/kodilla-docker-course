@@ -1,0 +1,38 @@
+version: "3.8"
+services:
+  mongodb:
+    container_name: mongo-db
+    image: mongo
+    volumes:
+      - mongodbdata:/data/db
+    env_file:
+      - ./env/mongo.env
+
+  backend:
+    container_name: todo-backend-app
+    build:
+      context: ./backend
+    volumes:
+      - ./backend/src:/app/src
+    ports:
+      - 8080:8080
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - mongodb
+
+  frontend:
+    container_name: todo-frontend-app
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend/src:/app/src
+    ports:
+      - 3000:3000
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+
+volumes:
+  mongodbdata:
