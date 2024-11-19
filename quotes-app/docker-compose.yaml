@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  postgresdb:
+    container_name: quotes-database
+    env_file:
+      - ./env/postgres.env
+    build:
+      context: ./database
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    container_name: quotes-backend
+    build:
+      context: ./backend
+    volumes:
+      - ./backend/src:/app/src
+    env_file:
+      - ./env/backend.env
+    depends_on:
+      - postgresdb
+
+  frontend:
+    container_name: quotes-frontend
+    build:
+      context: ./frontend
+    volumes:
+      - ./frontend/src:/app/src
+    ports:
+      - 8081:80
+    stdin_open: true
+    tty: true
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
