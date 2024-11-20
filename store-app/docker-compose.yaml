@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  mysqldb:
+    container_name: store-database
+    image: mysql:latest
+    env_file:
+      - ./env/mysql.env
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - backend
+    ports:
+      - "3306:3306"
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: message-queue
+    env_file:
+      - ./env/rabbitmq.env
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+
+  products-api:
+    build:
+      context: ./products-api
+    env_file:
+      - ./env/products.env
+    depends_on:
+      - mysqldb
+      - rabbitmq
+    networks:
+      - backend
+    ports:
+      - "8080:8080"
+
+  notifications-api:
+    build:
+      context: ./notifications-api
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_QUEUE_NAME: orders_queue
+    depends_on:
+      - rabbitmq
+    networks:
+      - backend
+    ports:
+      - "5001:5001"
+
+  store-frontend:
+    build:
+      context: ./store-frontend
+    environment:
+      REACT_APP_API_URL: http://products-api:8080
+    depends_on:
+      - products-api
+    networks:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  mysql_data:
+
+networks:
+  backend:
