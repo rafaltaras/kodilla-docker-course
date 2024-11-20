@@ -6,13 +6,18 @@ services:
     container_name: store-database
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: storedb
+      MYSQL_DATABASE: mysqldb
       MYSQL_USER: user
       MYSQL_PASSWORD: rootpassword
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
       - "3306:3306"
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   rabbitmq:
     image: rabbitmq:management
@@ -36,8 +41,8 @@ services:
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
     depends_on:
-      - mysqldb
-      - rabbitmq
+      mysqldb:
+        condition: service_healthy
     ports:
       - "8080:8080"
 
