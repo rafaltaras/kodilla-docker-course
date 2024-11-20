@@ -5,10 +5,10 @@ services:
     image: mysql:latest
     container_name: store-database
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mysqldb
-      MYSQL_USER: user
-      MYSQL_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
@@ -23,8 +23,8 @@ services:
     image: rabbitmq:management
     container_name: message-queue
     environment:
-      RABBITMQ_DEFAULT_USER: guest
-      RABBITMQ_DEFAULT_PASS: guest
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_USER}
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -33,13 +33,13 @@ services:
     build:
       context: ./products-api
     environment:
-      MYSQL_HOST: store-database
-      MYSQL_PORT: 3306
-      MYSQL_DATABASE: mysqldb
-      MYSQL_USERNAME: user
-      MYSQL_PASSWORD: rootpassword
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USERNAME: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
     depends_on:
       mysqldb:
         condition: service_healthy
@@ -50,9 +50,9 @@ services:
     build:
       context: ./notifications-api
     environment:
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_QUEUE_NAME: orders_queue
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+      RABBITMQ_QUEUE_NAME: ${RABBITMQ_QUEUE_NAME}
     depends_on:
       - rabbitmq
     ports:
