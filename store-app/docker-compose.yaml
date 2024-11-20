@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   mysqldb:
-    container_name: store-database
     image: mysql:latest
+    container_name: store-database
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: mysqldb
+      MYSQL_DATABASE: storedb
       MYSQL_USER: user
       MYSQL_PASSWORD: rootpassword
     volumes:
@@ -18,9 +18,8 @@ services:
     image: rabbitmq:management
     container_name: message-queue
     environment:
-      RABBITMQ_HOST: rabbitmq
-      RABBITMQ_PORT: 5672
-      RABBITMQ_QUEUE_NAME: orders_queue
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     ports:
       - "5672:5672"
       - "15672:15672"
@@ -29,11 +28,13 @@ services:
     build:
       context: ./products-api
     environment:
-      MYSQL_HOST: mysqldb
+      MYSQL_HOST: store-database
       MYSQL_PORT: 3306
       MYSQL_DATABASE: mysqldb
-      MYSQL_USER: user
+      MYSQL_USERNAME: user
       MYSQL_PASSWORD: rootpassword
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
     depends_on:
       - mysqldb
       - rabbitmq
