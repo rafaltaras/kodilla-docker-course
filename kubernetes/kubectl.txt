@@ -1,0 +1,23 @@
+Wyświetl wszystkie zasoby typu deployment:
+    kubectl get deployments -n nginx-ns
+
+Wyświetl informacje na temat tego konkretnego zasobu typu deployment.
+    kubectl describe deployment nginx-app -n nginx-ns
+
+Wyświetl tylko nazwy wszystkich podów w utworzonej przestrzeni nazw.
+    kubectl get pods -n nginx-ns -o custom-columns=NAME:.metadata.name
+
+Wyświetl plik manifest w formacie yaml dla utworzonego zasobu typu deployment.
+    kubectl get deployment nginx-app -n nginx-ns -o yaml
+
+Wypisz zawartość pliku /etc/hosts z istniejącego w przestrzeni nazw nginx-ns poda.
+    kubectl exec -n nginx-ns POD_NAME -- cat /etc/hosts
+
+Usuń pod istniejący w tej przestrzeni nazw.
+    kubectl delete pod POD_NAME -n nginx-ns
+
+Usuń zasób deployment, który utworzyłeś.
+    kubectl delete deployment nginx-app -n nginx-ns
+
+Usuń utworzoną przestrzeń nazw.
+    kubectl delete namespace nginx-ns
