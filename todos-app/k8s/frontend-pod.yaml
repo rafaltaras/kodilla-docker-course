@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+ name: frontend
+ labels:
+   component: frontend
+
+spec:
+ containers:
+   - name: todo-frontend-app
+     image: rafaltaraska/todo-frontend:1.0.0
+     ports:
+       - containerPort: 3000

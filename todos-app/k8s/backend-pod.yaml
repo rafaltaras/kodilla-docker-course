@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+
+metadata:
+ name: backend
+ labels:
+   component: backend
+
+spec:
+ containers:
+   - name: todo-backend-app
+     image: rafaltaraska/todo-backend:1.0.0
+     ports:
+       - containerPort: 8000
