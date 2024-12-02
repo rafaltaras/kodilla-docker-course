@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: store-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: store-frontend
+  template:
+    metadata:
+      labels:
+        app: store-frontend
+    spec:
+      containers:
+      - name: store-frontend
+        image: rafaltaraska/store-frontend:latest
+        ports:
+        - containerPort: 3000
