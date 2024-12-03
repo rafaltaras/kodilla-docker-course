@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-db
+  name: database
+
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mysql
+      component: database
   template:
     metadata:
       labels:
-        app: mysql
+        component: database
     spec:
       containers:
-      - name: mysql
+      - name: mysqldb
         image: mysql:latest
         env:
           - name: MYSQL_ROOT_PASSWORD
